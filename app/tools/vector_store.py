@@ -24,7 +24,6 @@ def get_weaviate_client():
         atexit.register(_weaviate_client.close)
     return _weaviate_client
 
-#todo: move to helpers/util functions
 def embed_query(text: str) -> list[float]:
     """Convert any text to vector"""
     return transforms_embedding.encode(text).tolist()

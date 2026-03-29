@@ -11,7 +11,7 @@ load_dotenv()
 weaviate_url = os.getenv("WEAVIATE_URL")
 top_k_results = os.getenv("TOP_K_RESULTS")
 
-transforms_embedding = SentenceTransformer("all-MiniLM-L6-v2") # todo : insert to .env
+transforms_embedding = SentenceTransformer("all-MiniLM-L6-v2")
 splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
 
 _weaviate_client = None # lazy initialization — only connect when first needed, not at import time

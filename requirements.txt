@@ -1,0 +1,17 @@
+langgraph
+fastapi
+starlette
+langchain-core
+langchain
+langchain-groq
+python-dotenv
+grandalf
+langchain-tavily
+tavily-python
+weaviate-client
+langchain-weaviate
+huggingface_hub
+sentence-transformers
+transformers
+langchain-text-splitters
+uvicorn

@@ -126,21 +126,22 @@ export default function Home() {
           {/* Status block */}
           <div className="rounded-xl border border-[#1e2035] bg-[#0d0d14] p-4 font-mono text-sm space-y-1">
             {loading ? (
-              <>
-                <div className="flex items-center gap-3 text-slate-400">
-                  <span className="text-[#00d4aa]">// RUNNING</span>
-                  <span className="flex gap-1">
-                    {[0, 1, 2].map((i) => (
-                      <span
-                        key={i}
-                        className="dot-pulse inline-block w-1.5 h-1.5 rounded-full bg-[#00d4aa]"
-                        style={{ animationDelay: `${i * 0.2}s` }}
-                      />
-                    ))}
-                  </span>
+              <div className="flex items-center gap-5 py-1">
+                {/* Radar pulse orb */}
+                <div className="relative flex items-center justify-center w-8 h-8 shrink-0">
+                  <span className="radar-ring absolute inline-flex w-6 h-6 rounded-full border border-[#00d4aa]" />
+                  <span className="radar-ring-2 absolute inline-flex w-6 h-6 rounded-full border border-[#00d4aa]" />
+                  <span className="radar-ring-3 absolute inline-flex w-6 h-6 rounded-full border border-[#00d4aa]" />
+                  <span className="relative w-2 h-2 rounded-full bg-[#00d4aa] shadow-[0_0_8px_#00d4aa]" />
                 </div>
-                <p className="text-slate-600 text-xs">Agents are processing your query…</p>
-              </>
+                {/* Text + scan bar */}
+                <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+                  <span className="text-[#00d4aa] font-mono text-sm tracking-widest">RUNNING</span>
+                  <div className="relative h-px bg-[#1e2035] overflow-hidden rounded-full">
+                    <div className="scan-bar absolute inset-y-0 w-1/4 bg-gradient-to-r from-transparent via-[#00d4aa] to-transparent" />
+                  </div>
+                </div>
+              </div>
             ) : response ? (
               <>
                 <div className="text-[#00d4aa]">// COMPLETE</div>

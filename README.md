@@ -42,11 +42,12 @@ Each agent has its own:
 | Layer | Technology |
 |-------|-----------|
 | Agent Orchestration | LangGraph `StateGraph` with cyclic iteration |
-| LLM | Groq `llama-3.3-70b-versatile` |
+| LLM (Research) | Groq `llama-3.3-70b-versatile` |
+| LLM (Evaluation) | OpenAI `gpt-4o` — LLM-as-judge |
 | Web Search | Tavily API |
 | Vector Store | Weaviate (Docker) + Sentence Transformers embeddings |
 | Backend | FastAPI + Uvicorn |
-| Frontend | Streamlit with per-agent checkpoint visualization |
+| Frontend | Next.js 15 + Tailwind CSS (replaces Streamlit) |
 | State Management | LangGraph `InMemorySaver` checkpointer |
 
 ---
@@ -57,8 +58,9 @@ Each agent has its own:
 - **Cyclic iteration** — conditional edges loop back to Search if results are incomplete
 - **Hybrid state schema** — `TypedDict` for graph state, Pydantic `BaseModel` for per-agent output validation
 - **RAG pipeline** — Tavily results chunked, embedded via Sentence Transformers, stored and queried from Weaviate
-- **Observable UI** — Streamlit dashboard showing per-agent input/output at each checkpoint
-- **Layered architecture** — Model / Controller / View separation (LangGraph / FastAPI / Streamlit)
+- **Observable UI** — Next.js dashboard showing per-agent output with clickable tabs
+- **LLM-as-judge evaluation** — GPT-4o scores each response on Faithfulness, Coverage, Recency and Coherence (0–100) independently of the research LLM
+- **Layered architecture** — Model / Controller / View separation (LangGraph / FastAPI / Next.js)
 
 ---
 
@@ -94,8 +96,8 @@ researchnexus/
 │   ├── models.py                # Request / Response Pydantic models
 │   └── main.py                  # FastAPI app entry point
 │
-├── ui/
-│   └── streamlit_app.py         # Observable agent dashboard
+├── frontend_nextjs/
+│   └── app/page.tsk             # Observable agent dashboard
 │
 ├── docker-compose.yml           # Weaviate local instance
 ├── requirements.txt
@@ -152,13 +154,13 @@ docker-compose up -d
 PYTHONPATH=. .venv/bin/uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### 7. Start the Streamlit UI
+### 7. Start the nextjs UI
 
 ```bash
-streamlit run ui/streamlit_main.py
+npm run dev
 ```
 
-Open `http://localhost:8501` in your browser.
+Open `http://localhost:3000` in your browser.
 
 ---
 
@@ -167,6 +169,7 @@ Open `http://localhost:8501` in your browser.
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `POST` | `/query/` | Run a research query through the full agent pipeline |
+| `POST` | `/evaluate/` | Score a response via LLM-as-judge (GPT-4o) |
 | `GET` | `/health` | Health check |
 | `GET` | `/docs` | Interactive Swagger UI |
 

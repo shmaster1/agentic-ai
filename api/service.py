@@ -1,4 +1,4 @@
-from api.models import ResearchRequest, ResearchResponse
+from api.models.research_models import ResearchRequest, ResearchResponse
 from app.workflows.research_graph import research_graph
 
 

@@ -14,6 +14,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(data, { status: res.status });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Request failed";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const cause = e instanceof Error && (e as any).cause ? String((e as any).cause) : "none";
+    const url = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+    console.error("Query proxy error:", { message, cause, url });
+    return NextResponse.json({ error: message, cause, url }, { status: 500 });
   }
 }

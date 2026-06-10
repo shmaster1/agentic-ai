@@ -26,7 +26,13 @@ _weaviate_client = None # lazy initialization — only connect when first needed
 def get_weaviate_client():
     global _weaviate_client
     if _weaviate_client is None:
-        _weaviate_client = weaviate.connect_to_local(host="localhost", port=8082, grpc_port=50052)
+        if weaviate_url:
+            _weaviate_client = weaviate.connect_to_weaviate_cloud(
+                cluster_url=weaviate_url,
+                auth_credentials=weaviate.auth.AuthApiKey(os.getenv("WEAVIATE_API_KEY", ""))
+            )
+        else:
+            _weaviate_client = weaviate.connect_to_local(host="localhost", port=8082, grpc_port=50052)
         atexit.register(_weaviate_client.close)
     return _weaviate_client
 

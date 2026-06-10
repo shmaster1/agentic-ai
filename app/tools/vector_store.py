@@ -8,7 +8,7 @@ import atexit
 
 load_dotenv()
 
-weaviate_url = os.getenv("WEAVIATE_URL")
+weaviate_url = os.getenv("WEAVIATE_BASE_URL")
 top_k_results = os.getenv("TOP_K_RESULTS")
 
 _hf_client = None

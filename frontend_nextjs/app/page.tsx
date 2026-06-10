@@ -1,12 +1,19 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import type { AgentNode, ResearchResponse, EvaluationScores } from "@/types";
 import AgentPipeline from "@/components/AgentPipeline";
 import AgentPanel from "@/components/AgentPanel";
 import FinalReport from "@/components/FinalReport";
 import EvaluationPanel from "@/components/EvaluationPanel";
+
+const OVERLAY_AGENTS: { node: AgentNode; label: string; color: string }[] = [
+  { node: "planner",   label: "PLANNER",   color: "#f59e0b" },
+  { node: "searcher",  label: "SEARCHER",  color: "#38bdf8" },
+  { node: "retriever", label: "RETRIEVER", color: "#a78bfa" },
+  { node: "writer",    label: "WRITER",    color: "#34d399" },
+];
 
 export default function Home() {
   const [threadId] = useState(() => uuidv4());
@@ -18,6 +25,42 @@ export default function Home() {
   const [evalScores, setEvalScores] = useState<EvaluationScores | null>(null);
   const [evalLoading, setEvalLoading] = useState(false);
   const [evalError, setEvalError] = useState<string | null>(null);
+
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [completedAgents, setCompletedAgents] = useState<AgentNode[]>([]);
+  const [writerDone, setWriterDone] = useState(false);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  // Start overlay + staggered agent completions when loading begins
+  useEffect(() => {
+    if (!loading) return;
+    setShowOverlay(true);
+    setCompletedAgents([]);
+    setWriterDone(false);
+
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [
+      setTimeout(() => setCompletedAgents(["planner"]), 5000),
+      setTimeout(() => setCompletedAgents(["planner", "searcher"]), 14000),
+      setTimeout(() => setCompletedAgents(["planner", "searcher", "retriever"]), 28000),
+    ];
+
+    return () => timersRef.current.forEach(clearTimeout);
+  }, [loading]);
+
+  // When loading ends, flash all agents done then fade overlay out
+  useEffect(() => {
+    if (loading || !showOverlay) return;
+    timersRef.current.forEach(clearTimeout);
+    setCompletedAgents(["planner", "searcher", "retriever", "writer"]);
+    setWriterDone(true);
+    const t = setTimeout(() => {
+      setShowOverlay(false);
+      setCompletedAgents([]);
+      setWriterDone(false);
+    }, 1000);
+    return () => clearTimeout(t);
+  }, [loading, showOverlay]);
 
   const handleSubmit = useCallback(async () => {
     if (!question.trim() || loading) return;
@@ -44,7 +87,6 @@ export default function Home() {
     if ((e.metaKey || e.ctrlKey) && e.key === "Enter") handleSubmit();
   };
 
-
   useEffect(() => {
     if (!response?.final_answer) return;
     setEvalLoading(true);
@@ -68,20 +110,47 @@ export default function Home() {
       .finally(() => setEvalLoading(false));
   }, [response]);
 
-
   return (
     <main className="min-h-screen p-8">
       {/* Full-page loader overlay */}
-      {loading && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0a0a0f]/80 backdrop-blur-sm">
+      {showOverlay && (
+        <div
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0a0a0f]/80 backdrop-blur-sm transition-opacity duration-700"
+          style={{ opacity: writerDone ? 0 : 1 }}
+        >
+          {/* Spinner */}
           <div className="relative w-16 h-16">
             <div className="absolute inset-0 rounded-full border-2 border-[#1e2035]" />
             <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#00d4aa] animate-spin" />
             <div className="absolute inset-2 rounded-full border-2 border-transparent border-t-[#a855f7] animate-spin [animation-duration:1.5s] [animation-direction:reverse]" />
           </div>
           <span className="mt-5 font-mono text-xs tracking-widest text-[#00d4aa]">PROCESSING</span>
+
+          {/* Agent checklist */}
+          <div className="mt-8 flex flex-col gap-3">
+            {OVERLAY_AGENTS.map(({ node, label, color }) => {
+              const done = completedAgents.includes(node);
+              return (
+                <div key={node} className="flex items-center gap-3 font-mono text-xs transition-all duration-500">
+                  <span
+                    className="w-4 text-center transition-all duration-300"
+                    style={{ color: done ? color : "#2a2d45" }}
+                  >
+                    {done ? "✓" : "○"}
+                  </span>
+                  <span
+                    className="tracking-widest transition-colors duration-300"
+                    style={{ color: done ? color : "#475569" }}
+                  >
+                    {label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
+
       <div className="grid grid-cols-[1fr_1.6fr] gap-8 max-w-7xl mx-auto">
 
         {/* LEFT — input */}
@@ -139,7 +208,6 @@ export default function Home() {
 
           {/* Evaluation panel */}
           <EvaluationPanel scores={evalScores} loading={evalLoading} error={evalError} />
-
 
         </div>
 

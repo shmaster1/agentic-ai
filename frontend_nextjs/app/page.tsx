@@ -91,9 +91,6 @@ export default function Home() {
 
           {/* Input */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-mono uppercase tracking-widest text-slate-500">
-              Research Question
-            </label>
             <div className="relative">
               <textarea
                 rows={6}
@@ -109,8 +106,7 @@ export default function Home() {
                 {question.length} chars
               </span>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono text-slate-600"># + Enter to submit</span>
+            <div className="flex items-center justify-end">
               <button
                 onClick={handleSubmit}
                 disabled={!question.trim() || loading}
@@ -143,15 +139,7 @@ export default function Home() {
                 </div>
               </div>
             ) : response ? (
-              <>
-                <div className="text-[#00d4aa]">// COMPLETE</div>
-                <div className="text-xs text-slate-400 space-y-1 pt-1">
-                  <div>Iterations: <span className="text-slate-100">{response.iteration_count}</span></div>
-                  <div>Tasks: <span className="text-slate-100">{response.tasks.length}</span></div>
-                  <div>Sources found: <span className="text-slate-100">{response.search_results.length}</span></div>
-                  <div>Sources kept: <span className="text-slate-100">{response.filtered_results.length}</span></div>
-                </div>
-              </>
+              <div className="text-[#00d4aa]">// COMPLETE</div>
             ) : (
               <>
                 <div className="text-[#00d4aa]">// READY</div>

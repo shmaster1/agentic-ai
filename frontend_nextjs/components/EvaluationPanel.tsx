@@ -105,20 +105,7 @@ export default function EvaluationPanel({ scores, loading, error }: Props) {
         </span>
       </div>
 
-      <div className="flex items-center gap-3 px-4 pt-3 pb-1">
-        {[
-          { label: "< 60",  color: "#ef4444" },
-          { label: "60–80", color: "#f59e0b" },
-          { label: "> 80",  color: "#34d399" },
-        ].map((t) => (
-          <div key={t.label} className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-sm" style={{ background: t.color }} />
-            <span className="text-[9px] font-mono text-slate-600">{t.label}</span>
-          </div>
-        ))}
-      </div>
-
-      <div className="px-4 pb-4 pt-2 space-y-4">
+      <div className="px-4 pb-4 pt-3 space-y-4">
         {loading || !scores
           ? METRICS.map(({ label }) => <SkeletonBar key={label} label={label} />)
           : METRICS.map(({ key, label }) => (

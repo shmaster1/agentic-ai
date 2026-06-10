@@ -97,12 +97,14 @@ export default function EvaluationPanel({ scores, loading, error }: Props) {
     >
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#1e2035]">
         <span className="text-[11px] font-mono uppercase tracking-widest text-slate-500">Evaluation</span>
-        <span
-          className="text-[10px] font-mono"
-          style={{ color: loading ? "#f59e0b" : scores ? "#34d399" : error ? "#ef4444" : "#475569" }}
-        >
-          {loading ? "● scoring…" : scores ? "● complete" : error ? "● failed" : "○ pending"}
-        </span>
+        {(loading || error) && (
+          <span
+            className="text-[10px] font-mono"
+            style={{ color: loading ? "#f59e0b" : "#ef4444" }}
+          >
+            {loading ? "● scoring…" : "● failed"}
+          </span>
+        )}
       </div>
 
       <div className="px-4 pb-4 pt-3 space-y-4">

@@ -11,7 +11,5 @@ tavily-python
 weaviate-client
 langchain-weaviate
 huggingface_hub
-sentence-transformers
-transformers
 langchain-text-splitters
 uvicorn

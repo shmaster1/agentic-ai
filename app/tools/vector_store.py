@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from langchain.tools import tool
-from sentence_transformers import SentenceTransformer
+from huggingface_hub import InferenceClient
 import weaviate
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import atexit
@@ -11,8 +11,14 @@ load_dotenv()
 weaviate_url = os.getenv("WEAVIATE_URL")
 top_k_results = os.getenv("TOP_K_RESULTS")
 
-transforms_embedding = SentenceTransformer("all-MiniLM-L6-v2")
+_hf_client = None
 splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+
+def get_hf_client() -> InferenceClient:
+    global _hf_client
+    if _hf_client is None:
+        _hf_client = InferenceClient(token=os.getenv("HF_API_TOKEN"))
+    return _hf_client
 
 _weaviate_client = None # lazy initialization — only connect when first needed, not at import time
 
@@ -25,8 +31,9 @@ def get_weaviate_client():
     return _weaviate_client
 
 def embed_query(text: str) -> list[float]:
-    """Convert any text to vector"""
-    return transforms_embedding.encode(text).tolist()
+    """Convert any text to vector via HuggingFace Inference API"""
+    result = get_hf_client().feature_extraction(text, model="sentence-transformers/all-MiniLM-L6-v2")
+    return result.tolist() if hasattr(result, "tolist") else list(result)
 
 
 @tool

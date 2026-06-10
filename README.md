@@ -103,7 +103,6 @@ researchnexus/
 ├── requirements.txt
 └── .env.example
 ```
-
 ---
 
 ## Getting Started

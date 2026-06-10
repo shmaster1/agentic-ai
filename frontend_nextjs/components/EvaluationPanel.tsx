@@ -90,6 +90,11 @@ function SkeletonBar({ label }: { label: string }) {
 }
 
 export default function EvaluationPanel({ scores, loading, error }: Props) {
+  const total = scores
+    ? Math.round((scores.sources + scores.coverage + scores.recency + scores.coherence) / 4)
+    : null;
+  const { color: totalColor, glow: totalGlow } = total !== null ? thresholdColor(total) : { color: "#475569", glow: "transparent" };
+
   return (
     <div
       className="rounded-xl border border-[#1e2035] overflow-hidden"
@@ -106,6 +111,30 @@ export default function EvaluationPanel({ scores, loading, error }: Props) {
           </span>
         )}
       </div>
+
+      {/* Total score */}
+      {(scores || loading) && (
+        <div className="flex flex-col items-center justify-center py-5 border-b border-[#1e2035]">
+          {total !== null ? (
+            <>
+              <span
+                className="text-6xl font-mono font-bold leading-none transition-all duration-700"
+                style={{ color: totalColor, textShadow: `0 0 30px ${totalGlow}` }}
+              >
+                {total}
+                <span className="text-3xl">%</span>
+              </span>
+              <span className="mt-1.5 text-[10px] font-mono uppercase tracking-widest text-slate-600">
+                Overall Score
+              </span>
+            </>
+          ) : (
+            <div className="h-16 flex items-center">
+              <span className="text-slate-700 font-mono text-sm">—</span>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="px-4 pb-4 pt-3 space-y-4">
         {loading || !scores

@@ -8,11 +8,11 @@ import AgentPanel from "@/components/AgentPanel";
 import FinalReport from "@/components/FinalReport";
 import EvaluationPanel from "@/components/EvaluationPanel";
 
-const OVERLAY_AGENTS: { node: AgentNode; label: string; color: string }[] = [
-  { node: "planner",   label: "PLANNER",   color: "#f59e0b" },
-  { node: "searcher",  label: "SEARCHER",  color: "#38bdf8" },
-  { node: "retriever", label: "RETRIEVER", color: "#a78bfa" },
-  { node: "writer",    label: "WRITER",    color: "#34d399" },
+const OVERLAY_AGENTS: { node: AgentNode; label: string; desc: string; color: string }[] = [
+  { node: "planner",   label: "Planner",   desc: "Breaking down into sub-tasks",   color: "#f59e0b" },
+  { node: "searcher",  label: "Searcher",  desc: "Searching the web for sources",  color: "#38bdf8" },
+  { node: "retriever", label: "Retriever", desc: "Filtering relevant results",      color: "#a78bfa" },
+  { node: "writer",    label: "Writer",    desc: "Synthesizing the final answer",   color: "#34d399" },
 ];
 
 export default function Home() {
@@ -127,23 +127,36 @@ export default function Home() {
           <span className="mt-5 font-mono text-xs tracking-widest text-[#00d4aa]">PROCESSING</span>
 
           {/* Agent checklist */}
-          <div className="mt-8 flex flex-col gap-3">
-            {OVERLAY_AGENTS.map(({ node, label, color }) => {
+          <div className="mt-8 flex flex-col gap-4 w-64">
+            {OVERLAY_AGENTS.map(({ node, label, desc, color }) => {
               const done = completedAgents.includes(node);
               return (
-                <div key={node} className="flex items-center gap-3 font-mono text-xs transition-all duration-500">
-                  <span
-                    className="w-4 text-center transition-all duration-300"
-                    style={{ color: done ? color : "#2a2d45" }}
+                <div key={node} className="flex items-start gap-3 transition-all duration-500">
+                  {/* Checkbox */}
+                  <div
+                    className="mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-all duration-400"
+                    style={{
+                      borderColor: done ? color : "#2a2d45",
+                      background: done ? `${color}22` : "transparent",
+                      boxShadow: done ? `0 0 8px ${color}55` : "none",
+                    }}
                   >
-                    {done ? "✓" : "○"}
-                  </span>
-                  <span
-                    className="tracking-widest transition-colors duration-300"
-                    style={{ color: done ? color : "#475569" }}
-                  >
-                    {label}
-                  </span>
+                    {done && (
+                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                        <path d="M1 4L3.5 6.5L9 1" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </div>
+                  {/* Text */}
+                  <div className="flex flex-col">
+                    <span
+                      className="font-mono text-xs font-semibold tracking-widest transition-colors duration-300"
+                      style={{ color: done ? color : "#64748b" }}
+                    >
+                      {label}
+                    </span>
+                    <span className="font-mono text-[10px] text-slate-600 mt-0.5">{desc}</span>
+                  </div>
                 </div>
               );
             })}

@@ -23,7 +23,7 @@ interface Props {
 
 export default function AgentPipeline({ openAgent, onSelect }: Props) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-2">
       {NODES.map((node, idx) => {
         const { icon, label } = META[node];
         const colors = COLORS[node];
@@ -53,7 +53,7 @@ export default function AgentPipeline({ openAgent, onSelect }: Props) {
               </div>
             </button>
             {idx < NODES.length - 1 && (
-              <span className="text-[#2a2d45] text-sm shrink-0">→</span>
+              <span className="hidden sm:inline text-[#2a2d45] text-sm shrink-0">→</span>
             )}
           </div>
         );

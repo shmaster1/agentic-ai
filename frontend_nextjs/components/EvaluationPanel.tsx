@@ -118,7 +118,7 @@ export default function EvaluationPanel({ scores, loading, error }: Props) {
           {total !== null ? (
             <>
               <span
-                className="text-6xl font-mono font-bold leading-none transition-all duration-700"
+                className="text-5xl md:text-6xl font-mono font-bold leading-none transition-all duration-700"
                 style={{ color: totalColor, textShadow: `0 0 30px ${totalGlow}` }}
               >
                 {total}

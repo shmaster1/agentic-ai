@@ -111,7 +111,7 @@ export default function Home() {
   }, [response]);
 
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen p-4 md:p-8">
       {/* Full-page loader overlay */}
       {showOverlay && (
         <div
@@ -164,7 +164,7 @@ export default function Home() {
         </div>
       )}
 
-      <div className="grid grid-cols-[1fr_1.6fr] gap-8 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.6fr] gap-6 lg:gap-8 max-w-7xl mx-auto">
 
         {/* LEFT — input */}
         <div className="flex flex-col gap-6">

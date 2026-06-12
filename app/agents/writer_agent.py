@@ -12,7 +12,6 @@ def writer_node(state: ResearchState) -> dict:
         HumanMessage(content=f"Question: {state['question']}\n\nFiltered Results:\n{filtered_results}")
     ]
     final_results = writer_model.invoke(messages)
-    state["iteration_count"] += 1
     return {
         "final_answer": final_results.content,
         "iteration_count": state["iteration_count"] + 1

@@ -12,5 +12,5 @@ tavily_client = TavilyClient(api_key=api_key)
 @tool
 def perform_web_search(query: str) -> dict:
     """Search the web for information about a given query and return results with sources."""
-    results = tavily_client.search(query, max_results=3)
+    results = tavily_client.search(query, max_results=6)
     return results

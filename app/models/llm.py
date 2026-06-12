@@ -17,6 +17,6 @@ def get_model(temperature: float = 0.5) -> ChatGroq:
 
 planner_model = get_model(temperature=0.3)   # precise, structured thinking
 search_model = get_model(temperature=0.1)    # factual, no creativity
-search_model_with_tools = search_model.bind_tools([perform_web_search]) # This way binding happens once at startup, not on every node call.
+search_model_with_tools = search_model.bind_tools([perform_web_search], tool_choice="perform_web_search")
 retriever_model = get_model(temperature=0.1) # factual, ranking based
 writer_model = get_model(temperature=0.7)    # creative, fluent writing

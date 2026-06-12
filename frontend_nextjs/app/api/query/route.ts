@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export const maxDuration = 60;
-
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -10,7 +8,7 @@ export async function POST(req: NextRequest) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(60_000),
+      signal: AbortSignal.timeout(300_000),
     });
     const data = await res.json();
     return NextResponse.json(data, { status: res.status });
